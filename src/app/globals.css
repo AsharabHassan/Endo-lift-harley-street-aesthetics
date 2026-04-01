@@ -13,8 +13,8 @@
   --color-hsa-text-dim: #777777;
   --color-hsa-success: #5A9A5A;
 
-  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
 }
 
 @layer base {
