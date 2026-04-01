@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-hsa-gold: #D4A335;
+  --color-hsa-gold-dark: #B8912A;
+  --color-hsa-bg: #0D0D1A;
+  --color-hsa-card-primary: #161630;
+  --color-hsa-card-secondary: #141425;
+  --color-hsa-border-subtle: #2a2a3a;
+  --color-hsa-text-primary: #FFFFFF;
+  --color-hsa-text-secondary: #999999;
+  --color-hsa-text-muted: #555555;
+  --color-hsa-text-dim: #777777;
+  --color-hsa-success: #5A9A5A;
+
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-hsa-bg);
+    color: var(--color-hsa-text-primary);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .gold-gradient-divider {
+    background: linear-gradient(90deg, transparent, #D4A335, transparent);
+    height: 1px;
+  }
+  .gold-gradient-button {
+    background: linear-gradient(135deg, #D4A335 0%, #B8912A 100%);
+  }
+  .label-uppercase {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+  }
+}
