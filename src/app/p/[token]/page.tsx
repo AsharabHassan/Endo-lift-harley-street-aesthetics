@@ -3,20 +3,18 @@ import { supabase } from "@/lib/supabase";
 import type { Patient, Offer, Deposit } from "@/lib/types";
 
 import { PageViewTracker } from "./PageViewTracker";
-import { Header } from "@/components/Header";
-import { CountdownTimer } from "@/components/CountdownTimer";
-import { OfferCard } from "@/components/OfferCard";
-import { SecondaryOffer } from "@/components/SecondaryOffer";
-import { DepositButton } from "@/components/DepositButton";
-import { BeforeAfterGallery } from "@/components/BeforeAfterGallery";
-import { TrustStats } from "@/components/TrustStats";
-import { PatientStory } from "@/components/PatientStory";
-import { DoctorProfile } from "@/components/DoctorProfile";
-import { BrowseGallery } from "@/components/BrowseGallery";
+import { PortalShell } from "@/components/PortalShell";
 
 /* ------------------------------------------------------------------ */
-/*  Hard-coded case study content matched by treatment area            */
+/*  Case study content matched by treatment area                      */
 /* ------------------------------------------------------------------ */
+
+interface PatientStoryData {
+  quote: string;
+  fullStory: string;
+  attribution: string;
+  treatment: string;
+}
 
 interface CaseStudy {
   beforeAfterPairs: {
@@ -25,12 +23,7 @@ interface CaseStudy {
     quote: string;
     attribution: string;
   }[];
-  patientStory: {
-    quote: string;
-    fullStory: string;
-    attribution: string;
-    treatment: string;
-  };
+  patientStories: PatientStoryData[];
 }
 
 const caseStudies: Record<string, CaseStudy> = {
@@ -39,8 +32,7 @@ const caseStudies: Record<string, CaseStudy> = {
       {
         beforeUrl: "/case-studies/face-before-1.jpg",
         afterUrl: "/case-studies/face-after-1.jpg",
-        quote:
-          "My skin feels tighter and more lifted — I look five years younger.",
+        quote: "My skin feels tighter and more lifted — I look five years younger.",
         attribution: "Sarah, 42",
       },
       {
@@ -50,48 +42,69 @@ const caseStudies: Record<string, CaseStudy> = {
         attribution: "Emma, 38",
       },
     ],
-    patientStory: {
-      quote:
-        "I was nervous about having any procedure, but the team put me at ease from the very first consultation.",
-      fullStory:
-        "After years of noticing my skin losing its firmness, I finally decided to do something about it. The Endolift procedure was quick, virtually painless, and the recovery was so much easier than I expected. Within a few weeks my friends were commenting on how refreshed I looked. I only wish I had done it sooner.",
-      attribution: "Sarah, 42",
-      treatment: "Full Face Endolift",
-    },
+    patientStories: [
+      {
+        quote: "I was nervous about having any procedure, but the team put me at ease from the very first consultation.",
+        fullStory: "After years of noticing my skin losing its firmness, I finally decided to do something about it. The Endolift procedure was quick, virtually painless, and the recovery was so much easier than I expected. Within a few weeks my friends were commenting on how refreshed I looked. I only wish I had done it sooner.",
+        attribution: "Sarah, 42",
+        treatment: "Full Face Endolift",
+      },
+      {
+        quote: "I didn't want anything drastic — just to look like a fresher version of myself. That's exactly what I got.",
+        fullStory: "I'd been researching non-surgical options for months and kept coming back to Endolift. What sold me was the consultation — Dr Nassab took the time to explain every step and was honest about what to expect. The procedure itself took under an hour and I was back at work the next day. Three months on, the skin across my cheeks and jawline is noticeably firmer. My husband says I look like I did on our wedding day.",
+        attribution: "Emma, 38",
+        treatment: "Full Face Endolift",
+      },
+      {
+        quote: "My friends keep asking what skincare I'm using. They can't believe it was a single treatment.",
+        fullStory: "I've spent a fortune on creams and facials over the years, but nothing really turned back the clock. Endolift was different — I could actually see my face lifting and tightening over the weeks that followed. The nasolabial folds that used to bother me have softened considerably, and my skin has a glow I haven't seen in years. The clinic followed up with me at every stage which made me feel really looked after.",
+        attribution: "Priya, 49",
+        treatment: "Full Face Endolift",
+      },
+    ],
   },
   neck: {
     beforeAfterPairs: [
       {
-        beforeUrl: "/case-studies/neck-before-1.jpg",
-        afterUrl: "/case-studies/neck-after-1.jpg",
-        quote:
-          "The sagging under my chin has completely gone. I feel confident again.",
+        beforeUrl: "/case-studies/neck-before-1.webp",
+        afterUrl: "/case-studies/neck-after-1.webp",
+        quote: "The sagging under my chin has completely gone. I feel confident again.",
         attribution: "Rachel, 51",
       },
       {
-        beforeUrl: "/case-studies/neck-before-2.jpg",
-        afterUrl: "/case-studies/neck-after-2.jpg",
-        quote:
-          "I can finally wear open-neck tops without feeling self-conscious.",
+        beforeUrl: "/case-studies/neck-before-2.webp",
+        afterUrl: "/case-studies/neck-after-2.webp",
+        quote: "I can finally wear open-neck tops without feeling self-conscious.",
         attribution: "Louise, 47",
       },
     ],
-    patientStory: {
-      quote:
-        "My neck was always the area that bothered me most. Now it matches how young I feel inside.",
-      fullStory:
-        "I had been considering a surgical neck lift for years but the downtime and risks always held me back. When I heard about Endolift I thought it sounded too good to be true. But the results speak for themselves — my jawline is more defined, the loose skin is tightened, and I had barely any downtime. The whole experience from consultation to aftercare was exceptional.",
-      attribution: "Rachel, 51",
-      treatment: "Neck Endolift",
-    },
+    patientStories: [
+      {
+        quote: "My neck was always the area that bothered me most. Now it matches how young I feel inside.",
+        fullStory: "I had been considering a surgical neck lift for years but the downtime and risks always held me back. When I heard about Endolift I thought it sounded too good to be true. But the results speak for themselves — my jawline is more defined, the loose skin is tightened, and I had barely any downtime. The whole experience from consultation to aftercare was exceptional.",
+        attribution: "Rachel, 51",
+        treatment: "Neck Endolift",
+      },
+      {
+        quote: "I used to hold my hand under my chin in every photo. I don't do that any more.",
+        fullStory: "The loose skin under my chin had been getting worse year after year and it was the first thing I noticed in the mirror every morning. A friend recommended Dr Nassab after having her own Endolift, so I booked a consultation. He was incredibly reassuring and realistic about outcomes. The procedure was so much simpler than I'd imagined — local anaesthetic, minimal discomfort, and I drove myself home afterwards. By week six the difference was remarkable. My neck looks clean and defined again.",
+        attribution: "Louise, 47",
+        treatment: "Neck Endolift",
+      },
+      {
+        quote: "I genuinely look ten years younger. The change in my neckline is extraordinary.",
+        fullStory: "I'd almost accepted that a saggy neck was just part of getting older, but my daughter encouraged me to look into non-surgical options. From the moment I walked into the Harley Street clinic I felt in safe hands. The team explained everything clearly, there was no hard sell, and the aftercare was second to none. Four months post-procedure, the skin on my neck is tighter than it has been in over a decade. I feel so much more confident in high-definition video calls for work, and I've started wearing necklaces again for the first time in years.",
+        attribution: "Margaret, 58",
+        treatment: "Neck Endolift",
+      },
+    ],
   },
   periorbital: {
     beforeAfterPairs: [
       {
         beforeUrl: "/case-studies/periorbital-before-1.jpg",
         afterUrl: "/case-studies/periorbital-after-1.jpg",
-        quote:
-          "People keep telling me I look so well-rested. The under-eye area is transformed.",
+        quote: "People keep telling me I look so well-rested. The under-eye area is transformed.",
         attribution: "Claire, 45",
       },
       {
@@ -101,27 +114,35 @@ const caseStudies: Record<string, CaseStudy> = {
         attribution: "Diana, 53",
       },
     ],
-    patientStory: {
-      quote:
-        "I always looked tired no matter how much sleep I got. Endolift changed that completely.",
-      fullStory:
-        "The skin around my eyes had become my biggest insecurity — heavy upper lids and dark hollows underneath made me look exhausted all the time. After the periorbital Endolift, the improvement was dramatic but natural-looking. My eyes look more open and brighter, and people just think I have been on holiday. The procedure itself was much less daunting than I imagined.",
-      attribution: "Claire, 45",
-      treatment: "Periorbital Endolift",
-    },
+    patientStories: [
+      {
+        quote: "I always looked tired no matter how much sleep I got. Endolift changed that completely.",
+        fullStory: "The skin around my eyes had become my biggest insecurity — heavy upper lids and dark hollows underneath made me look exhausted all the time. After the periorbital Endolift, the improvement was dramatic but natural-looking. My eyes look more open and brighter, and people just think I have been on holiday. The procedure itself was much less daunting than I imagined.",
+        attribution: "Claire, 45",
+        treatment: "Periorbital Endolift",
+      },
+      {
+        quote: "My eyelids were starting to hood and it made me look permanently cross. Not any more.",
+        fullStory: "I'd been self-conscious about my heavy eyelids for years. They made me look stern and tired even when I was perfectly happy. I didn't want to go under the knife for a blepharoplasty, so when I discovered the periorbital Endolift I was intrigued. The consultation was thorough — Dr Nassab showed me exactly what could be achieved. The procedure was comfortable and over before I knew it. Within a couple of months my upper lids had lifted noticeably, opening up my whole face. Colleagues have commented that I look brighter and more approachable. I couldn't be happier.",
+        attribution: "Diana, 53",
+        treatment: "Periorbital Endolift",
+      },
+      {
+        quote: "I used to pile on concealer every morning to hide the dark hollows. Now I barely need any make-up.",
+        fullStory: "The under-eye hollows and crepey skin had bothered me since my early forties. I tried every eye cream on the market and even had filler, which never looked quite right. The Endolift approach was completely different — it works from beneath the skin to tighten and stimulate collagen. Recovery was straightforward, just some mild swelling for a few days. By the three-month mark the transformation was clear: smoother, firmer skin around both eyes and a natural, refreshed look. I feel like I've got my confidence back.",
+        attribution: "Annabel, 46",
+        treatment: "Periorbital Endolift",
+      },
+    ],
   },
 };
 
 function getCaseStudy(treatmentArea: string): CaseStudy {
   const key = treatmentArea.toLowerCase();
   if (key in caseStudies) return caseStudies[key];
-
-  // Fuzzy matching for common variations
   if (key.includes("neck")) return caseStudies.neck;
   if (key.includes("eye") || key.includes("periorbital"))
     return caseStudies.periorbital;
-
-  // Default to face
   return caseStudies.face;
 }
 
@@ -141,23 +162,6 @@ function computeCountdownTarget(offer: Offer): string {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Deposit-secured badge                                              */
-/* ------------------------------------------------------------------ */
-
-function DepositSecuredBadge({ treatmentName }: { treatmentName: string }) {
-  return (
-    <div className="bg-hsa-card-primary border border-hsa-success rounded-lg p-6 text-center space-y-2">
-      <div className="text-hsa-success text-3xl">&#10003;</div>
-      <h3 className="font-serif text-xl text-white">Deposit Secured</h3>
-      <p className="text-hsa-text-secondary text-sm">
-        Your place for <span className="text-white">{treatmentName}</span> is
-        confirmed.
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Page component                                                     */
 /* ------------------------------------------------------------------ */
 
@@ -168,7 +172,6 @@ export default async function PortalPage({
 }) {
   const { token } = await params;
 
-  /* ---------- Fetch patient by token ---------- */
   const { data: patient } = await supabase
     .from("patients")
     .select("*")
@@ -179,23 +182,25 @@ export default async function PortalPage({
     notFound();
   }
 
-  /* ---------- Check token expiry ---------- */
   const isExpired = new Date(patient.token_expires_at) < new Date();
 
   if (isExpired) {
     return (
       <main className="min-h-screen bg-hsa-bg flex items-center justify-center px-6">
         <div className="max-w-md text-center space-y-6">
-          <h1 className="font-serif text-2xl text-white">
+          <div className="w-16 h-16 mx-auto rounded-full bg-hsa-card-primary border border-hsa-border-subtle flex items-center justify-center">
+            <span className="text-hsa-text-muted text-2xl">&#9203;</span>
+          </div>
+          <h1 className="font-serif italic text-2xl text-hsa-cream">
             This Link Has Expired
           </h1>
-          <p className="text-hsa-text-secondary text-sm leading-relaxed">
+          <p className="font-mono text-[10px] text-hsa-cream/40 leading-relaxed tracking-[0.05em]">
             Your personalised offer is no longer available through this link.
             Please contact us to discuss your treatment options.
           </p>
           <a
             href="tel:02071234567"
-            className="inline-block gold-gradient-button text-white font-semibold py-3 px-8 rounded-lg transition-opacity hover:opacity-90"
+            className="btn-gold inline-block"
           >
             Call Us: 020 7123 4567
           </a>
@@ -204,7 +209,6 @@ export default async function PortalPage({
     );
   }
 
-  /* ---------- Fetch offers and deposits ---------- */
   const [{ data: offers }, { data: deposits }] = await Promise.all([
     supabase
       .from("offers")
@@ -225,175 +229,39 @@ export default async function PortalPage({
 
   const paidOfferIds = new Set(completedDeposits.map((d) => d.offer_id));
   const primaryOffer = allOffers.find((o) => o.is_primary) ?? allOffers[0];
-  const secondaryOffers = allOffers.filter(
-    (o) => o.id !== primaryOffer?.id
-  );
+  const secondaryOffers = allOffers.filter((o) => o.id !== primaryOffer?.id);
 
-  /* ---------- Matched case study content ---------- */
   const caseStudy = getCaseStudy(primaryOffer?.treatment_area ?? "face");
-
-  /* ---------- Countdown target ---------- */
   const countdownTarget = primaryOffer
     ? computeCountdownTarget(primaryOffer)
     : null;
-
-  /* ---------- Formatted consultation date ---------- */
   const consultationDateFormatted = patient.consultation_date
     ? formatConsultationDate(patient.consultation_date)
     : null;
 
-  /* ---------- Render ---------- */
+  if (!primaryOffer) {
+    notFound();
+  }
+
   return (
-    <main className="min-h-screen bg-hsa-bg">
-      <div className="max-w-lg mx-auto px-5 pb-16">
-        {/* 1. Page view tracker (fire-and-forget) */}
-        <PageViewTracker patientId={patient.id} />
-
-        {/* 2. Header */}
-        <Header />
-
-        {/* 3. Personalized greeting */}
-        <section className="text-center py-6 space-y-2">
-          <h1 className="font-serif text-2xl text-white leading-snug">
-            Your Personalised Treatment Plan
-          </h1>
-          <p className="text-hsa-text-secondary text-sm">
-            Prepared for{" "}
-            <span className="text-white font-medium">
-              {patient.first_name}
-            </span>
-            {consultationDateFormatted && (
-              <>
-                {" "}
-                &mdash; consultation on{" "}
-                <span className="text-white">{consultationDateFormatted}</span>
-              </>
-            )}
-          </p>
-        </section>
-
-        {/* 4. Countdown timer */}
-        {countdownTarget && (
-          <section className="mb-6">
-            <CountdownTimer targetDate={countdownTarget} />
-          </section>
-        )}
-
-        {/* 5. Primary offer (or deposit secured) */}
-        {primaryOffer && (
-          <section className="mb-6">
-            {paidOfferIds.has(primaryOffer.id) ? (
-              <DepositSecuredBadge treatmentName={primaryOffer.treatment_name} />
-            ) : (
-              <OfferCard
-                offer={primaryOffer}
-                patientId={patient.id}
-                token={token}
-              />
-            )}
-          </section>
-        )}
-
-        {/* 6. Secondary offers */}
-        {secondaryOffers.length > 0 && (
-          <section className="space-y-4 mb-8">
-            <h2 className="font-serif text-lg text-white">
-              Additional Treatments
-            </h2>
-            {secondaryOffers.map((offer) =>
-              paidOfferIds.has(offer.id) ? (
-                <DepositSecuredBadge
-                  key={offer.id}
-                  treatmentName={offer.treatment_name}
-                />
-              ) : (
-                <SecondaryOffer
-                  key={offer.id}
-                  offer={offer}
-                  patientId={patient.id}
-                  token={token}
-                />
-              )
-            )}
-          </section>
-        )}
-
-        {/* 7. Gold gradient divider */}
-        <div className="gold-gradient-divider my-10" />
-
-        {/* 8. Before & After Gallery */}
-        <section className="mb-10">
-          <BeforeAfterGallery
-            treatmentArea={primaryOffer?.treatment_area ?? "face"}
-            pairs={caseStudy.beforeAfterPairs}
-          />
-        </section>
-
-        {/* 9. Trust Stats */}
-        <section className="mb-10">
-          <TrustStats />
-        </section>
-
-        {/* 10. Patient Story */}
-        <section className="mb-10">
-          <h3 className="font-serif text-lg text-white mb-4">
-            Patient Story
-          </h3>
-          <PatientStory
-            quote={caseStudy.patientStory.quote}
-            fullStory={caseStudy.patientStory.fullStory}
-            attribution={caseStudy.patientStory.attribution}
-            treatment={caseStudy.patientStory.treatment}
-          />
-        </section>
-
-        {/* 11. Doctor Profile */}
-        <section className="mb-10">
-          <h3 className="font-serif text-lg text-white mb-4">
-            Your Practitioner
-          </h3>
-          <DoctorProfile
-            name="Dr. Reza Nassab"
-            title="Lead Aesthetic Practitioner"
-            credentials="FRCS (Plast), GMC Registered Specialist. Over 15 years of experience in aesthetic and reconstructive procedures. Pioneer of Endolift laser technology in the UK."
-          />
-        </section>
-
-        {/* 12. Browse Gallery */}
-        <section className="mb-10">
-          <BrowseGallery />
-        </section>
-
-        {/* 13. Final CTA */}
-        <section className="space-y-5 text-center">
-          <div className="gold-gradient-divider mb-6" />
-          <h3 className="font-serif text-lg text-white">
-            Ready to Secure Your Treatment?
-          </h3>
-          <p className="text-hsa-text-secondary text-sm leading-relaxed">
-            Lock in your exclusive price with a fully refundable{" "}
-            <span className="text-white font-medium">&pound;50 deposit</span>.
-          </p>
-          {primaryOffer && !paidOfferIds.has(primaryOffer.id) && (
-            <DepositButton
-              patientId={patient.id}
-              offerId={primaryOffer.id}
-              token={token}
-              treatmentName={primaryOffer.treatment_name}
-              isPrimary
-            />
-          )}
-          <p className="text-hsa-text-muted text-xs">
-            Or call us directly:{" "}
-            <a
-              href="tel:02071234567"
-              className="text-hsa-gold hover:underline"
-            >
-              020 7123 4567
-            </a>
-          </p>
-        </section>
-      </div>
-    </main>
+    <>
+      <PageViewTracker patientId={patient.id} />
+      <PortalShell
+        firstName={patient.first_name}
+        consultationDate={consultationDateFormatted}
+        countdownTarget={countdownTarget}
+        primaryOffer={primaryOffer}
+        secondaryOffers={secondaryOffers}
+        patientId={patient.id}
+        token={token}
+        paidOfferIds={paidOfferIds}
+        beforeAfterPairs={caseStudy.beforeAfterPairs}
+        treatmentArea={primaryOffer.treatment_area}
+        patientStories={caseStudy.patientStories}
+        doctorName={patient.doctor_name ?? "Dr. Reza Nassab"}
+        doctorTitle={patient.doctor_title ?? "Lead Aesthetic Practitioner"}
+        doctorCredentials={patient.doctor_credentials ?? "FRCS (Plast), GMC Registered Specialist. Over 15 years of experience in aesthetic and reconstructive procedures. Pioneer of Endolift laser technology in the UK."}
+      />
+    </>
   );
 }

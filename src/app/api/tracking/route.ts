@@ -1,12 +1,16 @@
 import { supabase } from "@/lib/supabase";
 import { addGhlContactTag } from "@/lib/ghl";
+import { trackingSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
-  const { patient_id, device, source } = await request.json();
+  const body = await request.json();
+  const parsed = trackingSchema.safeParse(body);
 
-  if (!patient_id) {
-    return Response.json({ error: "Missing patient_id" }, { status: 400 });
+  if (!parsed.success) {
+    return Response.json({ error: "Invalid request" }, { status: 400 });
   }
+
+  const { patient_id, device, source } = parsed.data;
 
   await supabase.from("page_views").insert({
     patient_id,

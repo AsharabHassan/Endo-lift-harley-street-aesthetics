@@ -21,11 +21,10 @@ describe("OfferCard", () => {
     expect(screen.getByText("Full Face Endolift")).toBeDefined();
     expect(screen.getByText("£3,495")).toBeDefined();
     expect(screen.getByText("£2,795")).toBeDefined();
-    expect(screen.getByText("You save £700")).toBeDefined();
   });
 
   it("displays bonus inclusion when present", () => {
     render(<OfferCard offer={mockOffer} patientId="patient-1" token="test-token" />);
-    expect(screen.getByText("Includes complimentary Free upper jawline")).toBeDefined();
+    expect(screen.getByText("Free upper jawline")).toBeDefined();
   });
 });

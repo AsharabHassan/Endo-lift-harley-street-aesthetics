@@ -7,6 +7,9 @@ export interface Patient {
   phone: string | null;
   consultation_date: string | null;
   suitability_score: number | null;
+  doctor_name: string | null;
+  doctor_title: string | null;
+  doctor_credentials: string | null;
   token_expires_at: string;
   created_at: string;
 }

@@ -6,9 +6,10 @@ describe("CountdownTimer", () => {
   it("displays days, hours, and minutes", () => {
     const target = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
     render(<CountdownTimer targetDate={target} />);
-    expect(screen.getByText("DAYS")).toBeDefined();
-    expect(screen.getByText("HOURS")).toBeDefined();
-    expect(screen.getByText("MINS")).toBeDefined();
+    expect(screen.getByText("Days")).toBeDefined();
+    expect(screen.getByText("Hours")).toBeDefined();
+    expect(screen.getByText("Mins")).toBeDefined();
+    expect(screen.getByText("Secs")).toBeDefined();
   });
 
   it("shows expired message when past target date", () => {

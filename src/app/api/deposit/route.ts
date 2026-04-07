@@ -1,17 +1,32 @@
 import { supabase } from "@/lib/supabase";
 import { stripe } from "@/lib/stripe";
+import { depositSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
-  const { patient_id, offer_id, token } = await request.json();
+  const body = await request.json();
+  const parsed = depositSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Invalid request", details: parsed.error.flatten().fieldErrors },
+      { status: 400 }
+    );
+  }
+
+  const { patient_id, offer_id, token } = parsed.data;
 
   const { data: patient, error: patientError } = await supabase
     .from("patients")
-    .select("id, email, first_name")
+    .select("id, email, first_name, token")
     .eq("id", patient_id)
     .single();
 
   if (patientError || !patient) {
     return Response.json({ error: "Patient not found" }, { status: 404 });
+  }
+
+  if (patient.token !== token) {
+    return Response.json({ error: "Invalid token" }, { status: 403 });
   }
 
   const { data: offer, error: offerError } = await supabase

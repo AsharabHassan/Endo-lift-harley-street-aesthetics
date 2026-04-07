@@ -1,4 +1,14 @@
 const GHL_API_KEY = process.env.GHL_API_KEY!;
+const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID!;
+
+function ghlHeaders(): Record<string, string> {
+  return {
+    Authorization: `Bearer ${GHL_API_KEY}`,
+    "Content-Type": "application/json",
+    Version: "2021-07-28",
+    "Location-Id": GHL_LOCATION_ID,
+  };
+}
 
 export async function updateGhlContactField(
   contactId: string,
@@ -9,11 +19,7 @@ export async function updateGhlContactField(
     `https://services.leadconnectorhq.com/contacts/${contactId}`,
     {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${GHL_API_KEY}`,
-        "Content-Type": "application/json",
-        Version: "2021-07-28",
-      },
+      headers: ghlHeaders(),
       body: JSON.stringify({
         customFields: [{ key: fieldKey, value }],
       }),
@@ -33,11 +39,7 @@ export async function addGhlContactTag(
     `https://services.leadconnectorhq.com/contacts/${contactId}/tags`,
     {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${GHL_API_KEY}`,
-        "Content-Type": "application/json",
-        Version: "2021-07-28",
-      },
+      headers: ghlHeaders(),
       body: JSON.stringify({ tags: [tag] }),
     }
   );

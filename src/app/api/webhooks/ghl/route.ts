@@ -1,32 +1,27 @@
 import { supabase } from "@/lib/supabase";
 import { generateToken } from "@/lib/tokens";
 import { updateGhlContactField } from "@/lib/ghl";
-
-interface GhlWebhookPayload {
-  contact_id: string;
-  first_name: string;
-  email?: string;
-  phone?: string;
-  consultation_date?: string;
-  suitability_score?: number;
-  offers: {
-    treatment_name: string;
-    treatment_area: string;
-    original_price: number;
-    offered_price: number;
-    bonus_inclusion?: string;
-    is_primary?: boolean;
-  }[];
-}
+import { ghlWebhookSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
-  const webhookSecret = request.headers.get("x-webhook-secret");
-  if (webhookSecret !== process.env.GHL_WEBHOOK_SECRET) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const body = await request.json();
+  const parsed = ghlWebhookSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Invalid payload", details: parsed.error.flatten().fieldErrors },
+      { status: 400 }
+    );
   }
 
-  const payload: GhlWebhookPayload = await request.json();
+  const payload = parsed.data;
   const token = generateToken();
+
+  // Token expires based on countdown_days (default 30 days)
+  const countdownDays = payload.countdown_days ?? 30;
+  const tokenExpiresAt = new Date(
+    Date.now() + countdownDays * 24 * 60 * 60 * 1000
+  ).toISOString();
 
   const { data: patient, error: patientError } = await supabase
     .from("patients")
@@ -38,6 +33,10 @@ export async function POST(request: Request) {
       phone: payload.phone || null,
       consultation_date: payload.consultation_date || null,
       suitability_score: payload.suitability_score || null,
+      doctor_name: payload.doctor_name || null,
+      doctor_title: payload.doctor_title || null,
+      doctor_credentials: payload.doctor_credentials || null,
+      token_expires_at: tokenExpiresAt,
     })
     .select("id, token")
     .single();

@@ -43,17 +43,17 @@ describe("POST /api/deposit", () => {
       };
       if (table === "patients") {
         chain.single.mockResolvedValue({
-          data: { id: "patient-1", email: "sarah@example.com", first_name: "Sarah" },
+          data: { id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", email: "sarah@example.com", first_name: "Sarah" },
           error: null,
         });
       }
       if (table === "offers") {
         chain.single.mockResolvedValue({
           data: {
-            id: "offer-1",
+            id: "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22",
             treatment_name: "Full Face Endolift",
             offered_price: 2795,
-            patient_id: "patient-1",
+            patient_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
           },
           error: null,
         });
@@ -68,8 +68,8 @@ describe("POST /api/deposit", () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        patient_id: "patient-1",
-        offer_id: "offer-1",
+        patient_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        offer_id: "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22",
         token: "abc123def456ghi789jkl012",
       }),
     });

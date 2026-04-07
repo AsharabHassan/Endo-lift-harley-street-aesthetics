@@ -52,7 +52,7 @@ describe("POST /api/webhooks/ghl", () => {
       email: "sarah@example.com",
       phone: "+447700900000",
       consultation_date: "2026-03-28T10:00:00Z",
-      suitability_score: 85,
+      suitability_score: 8,
       offers: [
         {
           treatment_name: "Full Face Endolift",
@@ -69,7 +69,6 @@ describe("POST /api/webhooks/ghl", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-webhook-secret": "test-secret",
       },
       body: JSON.stringify(payload),
     });
@@ -84,17 +83,16 @@ describe("POST /api/webhooks/ghl", () => {
     );
   });
 
-  it("rejects requests with invalid webhook secret", async () => {
+  it("rejects requests with invalid payload", async () => {
     const request = new Request("http://localhost:3000/api/webhooks/ghl", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-webhook-secret": "wrong-secret",
       },
       body: JSON.stringify({}),
     });
 
     const response = await POST(request);
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
   });
 });

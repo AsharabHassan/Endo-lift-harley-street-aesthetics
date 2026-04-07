@@ -1,42 +1,242 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-hsa-gold: #D4A335;
-  --color-hsa-gold-dark: #B8912A;
-  --color-hsa-bg: #0D0D1A;
-  --color-hsa-card-primary: #161630;
-  --color-hsa-card-secondary: #141425;
-  --color-hsa-border-subtle: #2a2a3a;
-  --color-hsa-text-primary: #FFFFFF;
-  --color-hsa-text-secondary: #999999;
-  --color-hsa-text-muted: #555555;
-  --color-hsa-text-dim: #777777;
-  --color-hsa-success: #5A9A5A;
+  --color-hsa-gold: #C49840;
+  --color-hsa-gold-light: #D4B060;
+  --color-hsa-gold-dark: #9A7628;
+  --color-hsa-bg: #060509;
+  --color-hsa-bg-elevated: #110E09;
+  --color-hsa-card-primary: rgba(17,14,9,0.8);
+  --color-hsa-card-secondary: rgba(17,14,9,0.5);
+  --color-hsa-border-subtle: rgba(196,152,64,0.08);
+  --color-hsa-border-gold: rgba(196,152,64,0.2);
+  --color-hsa-text-primary: #EDE6D6;
+  --color-hsa-text-secondary: rgba(237,230,214,0.55);
+  --color-hsa-text-muted: rgba(196,152,64,0.4);
+  --color-hsa-text-dim: rgba(255,255,255,0.15);
+  --color-hsa-success: #4ADE80;
+  --color-hsa-success-dark: #166534;
+  --color-hsa-urgency: #F59E0B;
+  --color-hsa-cream: #EDE6D6;
 
   --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-space-mono), "Courier New", monospace;
+  --font-sans: var(--font-space-mono), "Courier New", monospace;
 }
 
 @layer base {
   body {
-    background-color: var(--color-hsa-bg);
-    color: var(--color-hsa-text-primary);
-    font-family: var(--font-sans);
+    background-color: #060509;
+    background-image:
+      linear-gradient(rgba(196,152,64,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,152,64,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: #EDE6D6;
+    font-family: var(--font-mono);
+  }
+
+  /* Film grain overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
   }
 }
 
 @layer utilities {
+  /* ------------------------------------------------------------------ */
+  /*  Gold ornaments                                                    */
+  /* ------------------------------------------------------------------ */
   .gold-gradient-divider {
-    background: linear-gradient(90deg, transparent, #D4A335, transparent);
+    background: linear-gradient(90deg, transparent 0%, rgba(196,152,64,0.15) 20%, rgba(196,152,64,0.35) 50%, rgba(196,152,64,0.15) 80%, transparent 100%);
     height: 1px;
   }
-  .gold-gradient-button {
-    background: linear-gradient(135deg, #D4A335 0%, #B8912A 100%);
+
+  .gold-line {
+    width: 40px;
+    height: 1px;
+    background: rgba(196,152,64,0.35);
   }
-  .label-uppercase {
-    font-size: 9px;
-    letter-spacing: 3px;
+
+  /* ------------------------------------------------------------------ */
+  /*  Buttons                                                           */
+  /* ------------------------------------------------------------------ */
+  .btn-gold {
+    background: linear-gradient(180deg, #D4AE50 0%, #AA8020 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 20px rgba(196,152,64,0.2);
+    color: #060509;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    font-family: var(--font-sans);
+    padding: 16px 32px;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .btn-gold:active {
+    transform: scale(0.99);
+  }
+  .btn-gold::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+    transform: translateX(-200%);
+  }
+  .btn-gold:hover::after {
+    animation: btn-shimmer 0.6s ease forwards;
+  }
+
+  @keyframes btn-shimmer {
+    to { transform: translateX(200%); }
+  }
+
+  .btn-outline {
+    border: 1px solid rgba(196,152,64,0.4);
+    color: rgba(196,152,64,0.8);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 16px 32px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover {
+    border-color: #C49840;
+    color: #C49840;
+    background: rgba(196,152,64,0.05);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Labels                                                            */
+  /* ------------------------------------------------------------------ */
+  .label-xs {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(196,152,64,0.55);
+  }
+
+  .label-uppercase {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Cards                                                             */
+  /* ------------------------------------------------------------------ */
+  .card-dark {
+    background: rgba(17,14,9,0.8);
+    border: 1px solid rgba(196,152,64,0.08);
+  }
+
+  .card-glow-hover {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card-glow-hover:hover {
+    box-shadow: 0 0 24px rgba(196,152,64,0.07);
+    border-color: rgba(196,152,64,0.2);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Text                                                              */
+  /* ------------------------------------------------------------------ */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #D4B060, #C49840, #9A7628);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gold-glow {
+    box-shadow: 0 0 20px rgba(196,152,64,0.08), 0 0 40px rgba(196,152,64,0.04);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Ruled line ornament                                               */
+  /* ------------------------------------------------------------------ */
+  .ruled-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ruled-line::before,
+  .ruled-line::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(196,152,64,0.2);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Animations                                                        */
+  /* ------------------------------------------------------------------ */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(196,152,64,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(196,152,64,0); }
+  }
+  .animate-pulse-gold {
+    animation: pulse-gold 2.5s infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Step progress dots                                                */
+  /* ------------------------------------------------------------------ */
+  .step-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(196,152,64,0.2);
+    transition: all 0.4s ease;
+  }
+  .step-dot.active {
+    width: 24px;
+    border-radius: 3px;
+    background: #C49840;
+  }
+  .step-dot.completed {
+    background: rgba(196,152,64,0.5);
   }
 }

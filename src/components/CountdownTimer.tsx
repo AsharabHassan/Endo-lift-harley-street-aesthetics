@@ -12,45 +12,55 @@ function calcRemaining(target: string) {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   const mins = Math.floor((diff / (1000 * 60)) % 60);
-  return { days, hours, mins };
+  const secs = Math.floor((diff / 1000) % 60);
+  return { days, hours, mins, secs };
 }
 
 export function CountdownTimer({ targetDate }: CountdownTimerProps) {
-  const [remaining, setRemaining] = useState(() => calcRemaining(targetDate));
+  const [mounted, setMounted] = useState(false);
+  const [remaining, setRemaining] = useState<ReturnType<typeof calcRemaining>>(null);
 
   useEffect(() => {
+    setRemaining(calcRemaining(targetDate));
+    setMounted(true);
+
     const interval = setInterval(() => {
       setRemaining(calcRemaining(targetDate));
-    }, 60_000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  if (!remaining) {
+  if (mounted && !remaining) {
     return (
-      <div className="bg-hsa-card-primary border border-hsa-border-subtle rounded-lg px-6 py-4 text-center">
-        <p className="text-hsa-gold text-sm">
+      <div className="card-dark px-4 py-3 text-center">
+        <p className="font-mono text-[9px] text-hsa-gold tracking-[0.15em] uppercase">
           Offer still available — book now to secure your price
         </p>
       </div>
     );
   }
 
+  const units = [
+    { value: remaining?.days ?? 0, label: "Days" },
+    { value: remaining?.hours ?? 0, label: "Hrs" },
+    { value: remaining?.mins ?? 0, label: "Min" },
+    { value: remaining?.secs ?? 0, label: "Sec" },
+  ];
+
   return (
-    <div className="bg-hsa-card-primary border border-hsa-border-subtle rounded-lg px-6 py-5">
-      <p className="label-uppercase text-hsa-gold text-center mb-4">
-        Offer expires in
+    <div className="card-dark px-4 py-4">
+      <p className="font-mono text-[8px] text-hsa-urgency tracking-[0.2em] uppercase text-center mb-3">
+        Exclusive offer expires in
       </p>
-      <div className="flex justify-center gap-6">
-        {[
-          { value: remaining.days, label: "DAYS" },
-          { value: remaining.hours, label: "HOURS" },
-          { value: remaining.mins, label: "MINS" },
-        ].map(({ value, label }) => (
+      <div className="flex justify-center gap-2">
+        {units.map(({ value, label }) => (
           <div key={label} className="text-center">
-            <span className="text-3xl font-bold text-white tabular-nums">
-              {String(value).padStart(2, "0")}
-            </span>
-            <p className="label-uppercase text-hsa-text-muted mt-1">{label}</p>
+            <div className="bg-hsa-bg w-14 h-14 flex items-center justify-center border border-hsa-border-subtle">
+              <span className="font-mono text-xl font-bold text-hsa-cream tabular-nums">
+                {mounted ? String(value).padStart(2, "0") : "--"}
+              </span>
+            </div>
+            <p className="font-mono text-[8px] text-hsa-gold/30 uppercase tracking-[0.15em] mt-1.5">{label}</p>
           </div>
         ))}
       </div>

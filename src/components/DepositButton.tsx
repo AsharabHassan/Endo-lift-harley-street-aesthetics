@@ -18,9 +18,11 @@ export function DepositButton({
   isPrimary,
 }: DepositButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/deposit", {
         method: "POST",
@@ -37,34 +39,66 @@ export function DepositButton({
       if (data.checkout_url) {
         window.location.href = data.checkout_url;
       } else {
+        setError("Something went wrong. Please try again or call us.");
         setLoading(false);
       }
     } catch {
+      setError("Connection error. Please check your internet and try again.");
       setLoading(false);
     }
   }
 
+  const errorMessage = error ? (
+    <p className="font-mono text-[9px] text-red-400 mt-2 text-center">{error}</p>
+  ) : null;
+
   if (isPrimary) {
     return (
-      <button
-        onClick={handleClick}
-        disabled={loading}
-        className="w-full gold-gradient-button text-white font-semibold py-3.5 rounded-lg transition-opacity hover:opacity-90 disabled:opacity-50"
-        aria-label={`Secure ${treatmentName} with £50 deposit`}
-      >
-        {loading ? "Processing..." : "Secure With £50 Deposit"}
-      </button>
+      <div>
+        <button
+          onClick={handleClick}
+          disabled={loading}
+          className="btn-gold w-full disabled:opacity-50"
+          aria-label={`Secure ${treatmentName} with £50 deposit`}
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Processing...
+            </span>
+          ) : (
+            "Secure With £50 Deposit"
+          )}
+        </button>
+        {errorMessage}
+      </div>
     );
   }
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={loading}
-      className="w-full border border-hsa-gold text-hsa-gold font-semibold py-3 rounded-lg transition-colors hover:bg-hsa-gold/10 disabled:opacity-50"
-      aria-label={`Secure ${treatmentName} treatment`}
-    >
-      {loading ? "Processing..." : "Secure This Treatment"}
-    </button>
+    <div>
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className="btn-outline w-full disabled:opacity-50"
+        aria-label={`Secure ${treatmentName} treatment`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Processing...
+          </span>
+        ) : (
+          "Secure This Treatment"
+        )}
+      </button>
+      {errorMessage}
+    </div>
   );
 }
