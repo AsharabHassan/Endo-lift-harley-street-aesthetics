@@ -18,8 +18,8 @@ export const ghlWebhookSchema = z.object({
   email: z.string().email().optional(),
   phone: z.string().optional(),
   consultation_date: z.string().optional(),
-  suitability_score: z.number().int().min(1).max(10).optional(),
-  countdown_days: z.number().int().min(1).max(90).optional(),
+  suitability_score: z.coerce.number().int().min(1).max(10).optional(),
+  countdown_days: z.coerce.number().int().min(1).max(90).optional(),
   doctor_name: z.string().optional(),
   doctor_title: z.string().optional(),
   doctor_credentials: z.string().optional(),
@@ -28,10 +28,10 @@ export const ghlWebhookSchema = z.object({
       z.object({
         treatment_name: z.string().min(1),
         treatment_area: z.string().min(1),
-        original_price: z.number().positive(),
-        offered_price: z.number().positive(),
+        original_price: z.coerce.number().positive(),
+        offered_price: z.coerce.number().positive(),
         bonus_inclusion: z.string().optional(),
-        is_primary: z.boolean().optional(),
+        is_primary: z.coerce.boolean().optional(),
       })
     )
     .min(1),
