@@ -4,12 +4,24 @@ import { updateGhlContactField } from "@/lib/ghl";
 import { ghlWebhookSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch (err) {
+    console.error("[GHL webhook] failed to parse JSON body", err);
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
   const parsed = ghlWebhookSchema.safeParse(body);
 
   if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    console.error("[GHL webhook] validation failed", {
+      fieldErrors,
+      body: JSON.stringify(body),
+    });
     return Response.json(
-      { error: "Invalid payload", details: parsed.error.flatten().fieldErrors },
+      { error: "Invalid payload", details: fieldErrors },
       { status: 400 }
     );
   }
