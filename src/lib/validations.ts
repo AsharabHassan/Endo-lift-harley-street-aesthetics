@@ -39,18 +39,25 @@ const priceToNumber = (v: unknown) => {
   return cleaned;
 };
 
-const offerSchema = z.object({
-  treatment_name: z.string().min(1),
-  treatment_area: z.string().min(1),
-  original_price: z.preprocess(priceToNumber, z.coerce.number().positive()),
-  offered_price: z.preprocess(priceToNumber, z.coerce.number().positive()),
-  bonus_inclusion: z.preprocess(emptyToUndef, z.string().optional()),
-  is_primary: z.preprocess(emptyToUndef, z.coerce.boolean().optional()),
-});
+// If offered_price is missing, fall back to original_price so the offer
+// still renders (no discount shown, but the treatment is still bookable).
+const offerSchema = z
+  .object({
+    treatment_name: z.string().min(1),
+    treatment_area: z.string().min(1),
+    original_price: z.preprocess(priceToNumber, z.coerce.number().positive()),
+    offered_price: z.preprocess(priceToNumber, z.coerce.number().positive().optional()),
+    bonus_inclusion: z.preprocess(emptyToUndef, z.string().optional()),
+    is_primary: z.preprocess(emptyToUndef, z.coerce.boolean().optional()),
+  })
+  .transform((o) => ({
+    ...o,
+    offered_price: o.offered_price ?? o.original_price,
+  }));
 
-// Keep only offers that have all four required fields after normalisation.
-// An offer with a blank treatment_name or missing offered_price is
-// unusable on the portal, so drop it rather than 400 the whole webhook.
+// Keep offers that have a treatment name, area, and at least a valid
+// original_price. offered_price can fall back to original_price in the
+// offer transform if missing, so we don't require it here.
 function isCompleteOffer(o: unknown): boolean {
   if (!o || typeof o !== "object") return false;
   const obj = o as Record<string, unknown>;
@@ -65,8 +72,7 @@ function isCompleteOffer(o: unknown): boolean {
   return (
     hasString(obj.treatment_name) &&
     hasString(obj.treatment_area) &&
-    hasPrice(obj.original_price) &&
-    hasPrice(obj.offered_price)
+    hasPrice(obj.original_price)
   );
 }
 
