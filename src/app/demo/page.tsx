@@ -98,7 +98,7 @@ export default function DemoPage() {
       beforeAfterPairs={caseStudy.beforeAfterPairs}
       treatmentArea={primaryOffer.treatment_area}
       patientStories={caseStudy.patientStories}
-      doctorName="Dr. Reza Nassab"
+      doctorName="Dr. Ayda Soltanzadeh"
       doctorTitle="Lead Aesthetic Practitioner"
       doctorCredentials="FRCS (Plast), GMC Registered Specialist. Over 15 years of experience in aesthetic and reconstructive procedures. Pioneer of Endolift laser technology in the UK."
     />

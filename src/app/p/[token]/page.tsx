@@ -258,7 +258,7 @@ export default async function PortalPage({
         beforeAfterPairs={caseStudy.beforeAfterPairs}
         treatmentArea={primaryOffer.treatment_area}
         patientStories={caseStudy.patientStories}
-        doctorName={patient.doctor_name ?? "Dr. Reza Nassab"}
+        doctorName={patient.doctor_name ?? "Dr. Ayda Soltanzadeh"}
         doctorTitle={patient.doctor_title ?? "Lead Aesthetic Practitioner"}
         doctorCredentials={patient.doctor_credentials ?? "FRCS (Plast), GMC Registered Specialist. Over 15 years of experience in aesthetic and reconstructive procedures. Pioneer of Endolift laser technology in the UK."}
       />
