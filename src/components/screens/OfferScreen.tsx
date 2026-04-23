@@ -79,9 +79,11 @@ export function OfferScreen({
             <div className="gold-gradient-divider my-4" />
 
             <div className="text-center py-4">
-              <p className="font-mono text-[11px] text-hsa-cream/30 line-through mb-1">
-                {formatPrice(primaryOffer.original_price)}
-              </p>
+              {savings > 0 && (
+                <p className="font-mono text-[11px] text-hsa-cream/30 line-through mb-1">
+                  {formatPrice(primaryOffer.original_price)}
+                </p>
+              )}
               <p className="font-serif italic text-[2.8rem] tracking-tight text-gradient-gold leading-none">
                 {formatPrice(primaryOffer.offered_price)}
               </p>
