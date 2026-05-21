@@ -14,7 +14,7 @@ const primaryOffer: Offer = {
   original_price: 3495,
   offered_price: 2795,
   bonus_inclusion: "Free upper jawline",
-  countdown_days: 7,
+  countdown_days: 14,
   is_primary: true,
   created_at: new Date().toISOString(),
 };
@@ -27,7 +27,7 @@ const secondaryOffer: Offer = {
   original_price: 1495,
   offered_price: 1495,
   bonus_inclusion: null,
-  countdown_days: 7,
+  countdown_days: 14,
   is_primary: false,
   created_at: new Date().toISOString(),
 };

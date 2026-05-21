@@ -30,7 +30,7 @@ create table if not exists offers (
   original_price  numeric(10,2) not null check (original_price > 0),
   offered_price   numeric(10,2) not null check (offered_price > 0),
   bonus_inclusion text,
-  countdown_days  integer not null default 7 check (countdown_days between 1 and 90),
+  countdown_days  integer not null default 14 check (countdown_days between 1 and 90),
   is_primary      boolean not null default false,
   created_at      timestamptz not null default now()
 );

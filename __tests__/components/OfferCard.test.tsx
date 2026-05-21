@@ -11,7 +11,7 @@ describe("OfferCard", () => {
     original_price: 3495,
     offered_price: 2795,
     bonus_inclusion: "Free upper jawline",
-    countdown_days: 7,
+    countdown_days: 14,
     is_primary: true,
     created_at: "2026-04-01",
   };
