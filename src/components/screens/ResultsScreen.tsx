@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { PatientStoryCarousel } from "@/components/PatientStory";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const container = {
   hidden: {},
@@ -199,34 +199,10 @@ export function ResultsScreen({ treatmentArea, pairs, patientStories }: ResultsS
       <motion.div variants={item} className="space-y-6 mb-10">
         {pairs.map((pair, index) => (
           <div key={index} className="card-dark overflow-hidden">
-            <div className="grid grid-cols-2">
-              <div className="relative aspect-[4/3] bg-hsa-bg-elevated">
-                <Image
-                  src={pair.beforeUrl}
-                  alt="Before treatment"
-                  fill
-                  sizes="50vw"
-                  className="object-cover"
-                  unoptimized
-                />
-                <span className="absolute bottom-2 left-2 font-mono text-[8px] tracking-[0.2em] uppercase text-white bg-black/70 backdrop-blur-sm px-2 py-1">
-                  Before
-                </span>
-              </div>
-              <div className="relative aspect-[4/3] bg-hsa-bg-elevated">
-                <Image
-                  src={pair.afterUrl}
-                  alt="After treatment"
-                  fill
-                  sizes="50vw"
-                  className="object-cover"
-                  unoptimized
-                />
-                <span className="absolute bottom-2 left-2 font-mono text-[8px] tracking-[0.2em] uppercase text-hsa-gold bg-black/70 backdrop-blur-sm px-2 py-1">
-                  After
-                </span>
-              </div>
-            </div>
+            <BeforeAfterSlider
+              beforeUrl={pair.beforeUrl}
+              afterUrl={pair.afterUrl}
+            />
 
             {pair.quote && (
               <div className="p-4 border-t border-hsa-border-subtle">

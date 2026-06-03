@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { supabase } from "@/lib/supabase";
+import { resolveBookingUrl } from "@/lib/treatments";
 
 export default async function SuccessPage({
   params,
@@ -14,7 +16,14 @@ export default async function SuccessPage({
   // session_id available for future verification if needed
   void session_id;
 
-  const bookingUrl = process.env.BOOKING_SYSTEM_URL ?? "#";
+  // Resolve the booking URL for this patient's treatment campaign.
+  const { data: patient } = await supabase
+    .from("patients")
+    .select("treatment_type")
+    .eq("token", token)
+    .single<{ treatment_type: string }>();
+
+  const bookingUrl = resolveBookingUrl(patient?.treatment_type);
 
   return (
     <main className="min-h-screen bg-hsa-bg">

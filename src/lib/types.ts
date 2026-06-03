@@ -1,6 +1,9 @@
+import type { TreatmentType } from "@/lib/treatments";
+
 export interface Patient {
   id: string;
   token: string;
+  treatment_type: TreatmentType;
   ghl_contact_id: string;
   first_name: string;
   email: string | null;

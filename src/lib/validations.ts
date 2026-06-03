@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  DEFAULT_TREATMENT_TYPE,
+  TREATMENT_TYPES,
+  isTreatmentType,
+} from "@/lib/treatments";
 
 export const depositSchema = z.object({
   patient_id: z.string().uuid(),
@@ -76,9 +81,29 @@ function isCompleteOffer(o: unknown): boolean {
   );
 }
 
+// GHL may send the treatment in several shapes ("CO2 Laser", "co2", "co2-laser",
+// "Endolift", ...). Normalise to a canonical TreatmentType; anything missing or
+// unrecognised falls back to the default treatment so a campaign can never 500
+// over a mislabelled merge field.
+const normaliseTreatmentType = (v: unknown): string => {
+  const cleaned = emptyToUndef(v);
+  if (typeof cleaned !== "string") return DEFAULT_TREATMENT_TYPE;
+  const slug = cleaned.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  if (isTreatmentType(slug)) return slug;
+  if (slug === "co2" || slug === "co2laser" || slug === "co_2_laser")
+    return "co2_laser";
+  if (slug.includes("co2")) return "co2_laser";
+  if (slug.includes("endolift") || slug.includes("endo")) return "endolift";
+  return DEFAULT_TREATMENT_TYPE;
+};
+
 export const ghlWebhookSchema = z.object({
   contact_id: z.string().min(1),
   first_name: z.string().min(1),
+  treatment_type: z.preprocess(
+    normaliseTreatmentType,
+    z.enum(TREATMENT_TYPES as unknown as [string, ...string[]])
+  ),
   email: z.preprocess(emptyToUndef, z.string().email().optional()),
   phone: z.preprocess(emptyToUndef, z.string().optional()),
   consultation_date: z.preprocess(emptyToUndef, z.string().optional()),

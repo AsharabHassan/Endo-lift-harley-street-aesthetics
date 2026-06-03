@@ -59,6 +59,7 @@ export async function POST(request: Request) {
 
   const patientRow = {
     token,
+    treatment_type: payload.treatment_type,
     ghl_contact_id: payload.contact_id,
     first_name: payload.first_name,
     email: payload.email || null,

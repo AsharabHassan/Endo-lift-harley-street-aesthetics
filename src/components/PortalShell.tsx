@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Offer } from "@/lib/types";
+import type { TreatmentAreaItem } from "@/lib/treatments";
 import { ScreenWrapper } from "./ScreenWrapper";
 import { StepNav, StepLabel } from "./StepNav";
 import { WelcomeScreen } from "./screens/WelcomeScreen";
@@ -36,9 +37,11 @@ interface PortalShellProps {
   beforeAfterPairs: BeforeAfterPair[];
   treatmentArea: string;
   patientStories: PatientStoryData[];
+  welcomeBlurb: string;
   doctorName: string;
   doctorTitle: string;
   doctorCredentials: string;
+  doctorTreatmentAreas: TreatmentAreaItem[];
 }
 
 const TOTAL_STEPS = 5;
@@ -55,9 +58,11 @@ export function PortalShell({
   beforeAfterPairs,
   treatmentArea,
   patientStories,
+  welcomeBlurb,
   doctorName,
   doctorTitle,
   doctorCredentials,
+  doctorTreatmentAreas,
 }: PortalShellProps) {
   const [step, setStep] = useState(0);
 
@@ -77,6 +82,7 @@ export function PortalShell({
           <WelcomeScreen
             firstName={firstName}
             consultationDate={consultationDate}
+            welcomeBlurb={welcomeBlurb}
             onNext={next}
           />
         )}
@@ -105,6 +111,7 @@ export function PortalShell({
             name={doctorName}
             title={doctorTitle}
             credentials={doctorCredentials}
+            treatmentAreas={doctorTreatmentAreas}
           />
         )}
 

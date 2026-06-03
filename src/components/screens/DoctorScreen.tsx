@@ -12,21 +12,20 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-const areas = [
-  { id: "01", name: "Full Face" },
-  { id: "02", name: "Neck" },
-  { id: "03", name: "Jawline" },
-  { id: "04", name: "Periorbital" },
-];
+interface TreatmentAreaItem {
+  id: string;
+  name: string;
+}
 
 interface DoctorScreenProps {
   name: string;
   title: string;
   credentials: string;
+  treatmentAreas: TreatmentAreaItem[];
   imageUrl?: string;
 }
 
-export function DoctorScreen({ name, title, credentials, imageUrl }: DoctorScreenProps) {
+export function DoctorScreen({ name, title, credentials, treatmentAreas, imageUrl }: DoctorScreenProps) {
   const initials = name.split(" ").map((n) => n[0]).join("");
 
   return (
@@ -96,7 +95,7 @@ export function DoctorScreen({ name, title, credentials, imageUrl }: DoctorScree
       <motion.div variants={item}>
         <p className="label-xs text-hsa-gold/40 mb-4">Treatment Areas</p>
         <div className="space-y-0">
-          {areas.map((area) => (
+          {treatmentAreas.map((area) => (
             <div
               key={area.id}
               className="flex items-center gap-3 py-3 border-b border-hsa-border-subtle"

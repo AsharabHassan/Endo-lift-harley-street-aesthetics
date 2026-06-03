@@ -15,10 +15,11 @@ const item = {
 interface WelcomeScreenProps {
   firstName: string;
   consultationDate?: string | null;
+  welcomeBlurb: string;
   onNext: () => void;
 }
 
-export function WelcomeScreen({ firstName, consultationDate, onNext }: WelcomeScreenProps) {
+export function WelcomeScreen({ firstName, consultationDate, welcomeBlurb, onNext }: WelcomeScreenProps) {
   return (
     <motion.div
       variants={container}
@@ -53,7 +54,7 @@ export function WelcomeScreen({ firstName, consultationDate, onNext }: WelcomeSc
 
         {/* Description */}
         <motion.p variants={item} className="font-mono text-[10px] leading-relaxed tracking-[0.05em] text-hsa-cream/55 mb-8 max-w-xs">
-          Your personalised Endolift treatment plan has been curated by our specialist team at Harley Street Aesthetic Clinic.
+          {welcomeBlurb}
         </motion.p>
 
         {/* Feature list */}
